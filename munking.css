@@ -1,0 +1,46 @@
+.box {
+    border: solid black 3px;
+    height: 150px;
+    width: 150px;
+}
+
+.players {
+    height: 900px;
+    width: 400px;
+    border: solid black 3px;
+}
+
+main {
+    display: flex;
+}
+
+button {
+    height: 50px;
+    width: 100px;
+}
+
+.thePlayer {
+    border: solid black 3px;
+    height: 150px;
+    width: 400px;
+}
+
+text {
+    border: solid black 1px;
+    height: 25px;
+    width: 25px;
+}
+
+#info {
+    height: 400px;
+    width: 400px;
+    border: solid black 3px;
+}
+
+#playerNCard {
+    margin-left: 100px;
+}
+
+.card {
+    display: flex;
+}
