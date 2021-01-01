@@ -29,22 +29,22 @@
         nameTag.textContent = name;
 
         nameTag.addEventListener("click", selectIcon);
-        playerName.textContent = "player " + numOfPlayer + ": " + name;
+        playerName.textContent = "player " + numOfPlayer + ": " + name + " ";
+        let att = document.createElement("text");
+        att.textContent = "0";
+        playerName.appendChild(att);
+
         let playerCards = document.createElement("div");
 
         playerCards.className = "cards";
         for (let i = 0; i < 2; i++) {
             let card = createMonster();
             playerCards.appendChild(card);
-
         }
-
         for (let i = 0; i < 3; i++) {
             let card = createTreasure();
             playerCards.appendChild(card);
         }
-
-
         lvBox.appendChild(nameTag);
         thePlayer.appendChild(playerName);
         thePlayer.appendChild(playerCards);
@@ -110,7 +110,6 @@
         card.append(img);
         card.append(desCription);
         return card;
-
     }
 
     function createTreasure() {
@@ -257,10 +256,17 @@
 
 
     function equiping() {
+        let card = qs(".selected");
+        let current = card.parentNode.parentNode.children[0].children[0];
+        let bonus = parseInt(card.children[3].textContent.substring(1));
         if (!qs(".selected").classList.contains("equip")) {
-            qs(".selected").classList.add("equip");
+            
+            card.classList.add("equip");
+            current.textContent = bonus + parseInt(current.textContent);
+            console.log(current);
         } else {
             qs(".selected").classList.remove("equip");
+            current.textContent = parseInt(current.textContent) - bonus;
         }
         
     }
