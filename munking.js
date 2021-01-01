@@ -69,7 +69,7 @@
         name.textContent = "monster-name";
         let img = document.createElement("img");
         img.className = "cardPic";
-        img.src = "img/monster.png";
+        img.src = "img/monster.PNG";
         let description = document.createElement("text");
         description.textContent = "something something something something";
         let numlv = getRandomInt(1, 15);
@@ -100,7 +100,7 @@
         let name = document.createElement("h4");
         name.textContent = "curse-name";
         let img = document.createElement("img");
-        img.src = "img/curse.png";
+        img.src = "img/curse.PNG";
         img.className = "cardPic";
         let desCription = document.createElement("text");
         desCription.textContent = curses[getRandomInt(0,3)];
@@ -120,7 +120,7 @@
         name.textContent = "treasure-name";
         let img = document.createElement("img");
         img.className = "cardPic";
-        img.src = "img/treasure.png";
+        img.src = "img/treasure.PNG";
         let description = document.createElement("text");
         description.textContent = "something something something something";
         let bonusAmount = getRandomInt(2, 5);
@@ -146,7 +146,6 @@
             use.id = "usebtn";
             use.textContent = "use";
             let cards = this.parentNode;
-            console.log(this.parentNode);
             use.addEventListener("click", getRidOff);
             cards.append(use);
 
