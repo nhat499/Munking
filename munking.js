@@ -7,8 +7,9 @@
     let treasure = ["one time use", "helm", "amor", "weapon", "shoe"];
     let curse1 = "lose a level";
     let curse2 = "lose a piece of equipment";
-    let curse3 = "lose your strongest equipment"
-    let curses = [curse1, curse2, curse3];
+    let curse3 = "lose your strongest equipment";
+    let curse4 = "lose 2 level";
+    let curses = [curse1, curse2, curse3, curse4];
 
     function init() {
         let newPlayerBtn = qs("#newPlayer");
@@ -21,7 +22,6 @@
         let name = qs("#name").value;
         let lvBox = qsa(".box")[0];
         
-
         let thePlayer = document.createElement("div");
         thePlayer.id = name;
         let playerName = document.createElement("h3");
@@ -103,7 +103,7 @@
         img.src = "img/curse.PNG";
         img.className = "cardPic";
         let desCription = document.createElement("text");
-        desCription.textContent = curses[getRandomInt(0,3)];
+        desCription.textContent = curses[getRandomInt(0,4)];
         card.addEventListener("click", select);
 
         card.append(name);
@@ -235,7 +235,7 @@
         let name = qs(".selectIcon").textContent;
         let player = qs("#" + name);
         let deck = player.children[1];
-        if (num < 3) {
+        if (num < 4) {
             let curse = createCurse();
             deck.append(curse);
         } else {
@@ -253,8 +253,6 @@
         deck.appendChild(card);
     }
 
-
-
     function equiping() {
         let card = qs(".selected");
         let current = card.parentNode.parentNode.children[0].children[0];
@@ -268,7 +266,6 @@
             qs(".selected").classList.remove("equip");
             current.textContent = parseInt(current.textContent) - bonus;
         }
-        
     }
 
     function trading() {
