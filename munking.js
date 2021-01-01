@@ -186,6 +186,7 @@
             let treasureBtn = document.createElement("button");
             treasureBtn.className = "drawsBtn";
             treasureBtn.textContent = "get Treasure";
+            treasureBtn.addEventListener("click", getTreasure);
 
             let doorAndTreasure = qs("#draws");
 
@@ -235,7 +236,6 @@
         let name = qs(".selectIcon").textContent;
         let player = qs("#" + name);
         let deck = player.children[1];
-        console.log(player);
         if (num < 3) {
             let curse = createCurse();
             deck.append(curse);
@@ -244,6 +244,14 @@
             let monster = createMonster();
             deck.append(monster);
         }
+    }
+
+    function getTreasure() {
+        let card = createTreasure();
+        let name = qs(".selectIcon").textContent;
+        let player = qs("#" + name);
+        let deck = player.children[1];
+        deck.appendChild(card);
     }
 
 
