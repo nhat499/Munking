@@ -1,46 +1,51 @@
 .box {
-    border: solid black 3px;
-    height: 150px;
-    width: 150px;
-}
-
-.players {
-    height: 900px;
-    width: 400px;
-    border: solid black 3px;
+    height: 200px;
+    width: 200px;
+    margin-right: 30px;
+    border: solid gray 1px;
 }
 
 main {
     display: flex;
 }
 
-button {
-    height: 50px;
+.card {
+    height: 200px;
+    width: 140px;
+    padding: 10px;
+    border: solid gray 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cards {
+    padding: 10px;
+    border-bottom: solid gray 1px;
+    display: flex;
+}
+
+.cardPic {
+    height: 70px;
     width: 100px;
 }
 
-.thePlayer {
-    border: solid black 3px;
-    height: 150px;
-    width: 400px;
+.card > h4 {
+    margin: 10px;
 }
 
-text {
-    border: solid black 1px;
-    height: 25px;
-    width: 25px;
+.card > text {
+    font-size: 10px;
 }
 
-#info {
-    height: 400px;
-    width: 400px;
-    border: solid black 3px;
+.card > h5 {
+    margin: 5px;
 }
 
-#playerNCard {
-    margin-left: 100px;
+.hidden {
+    display: none;
 }
 
-.card {
-    display: flex;
+#selected {
+    border: solid red 3px;
 }
