@@ -38,11 +38,13 @@
 
         playerCards.className = "cards";
         for (let i = 0; i < 2; i++) {
-            let card = createMonster();
+            //let card = createMonster();
+            let card = doorCard();
             playerCards.appendChild(card);
         }
         for (let i = 0; i < 3; i++) {
-            let card = createTreasure();
+            //let card = createTreasure();
+            let card = treasureCard();
             playerCards.appendChild(card);
         }
         lvBox.appendChild(nameTag);
@@ -94,6 +96,19 @@
         return card;
     }
 
+    function doorCard() {
+        let num = getRandomInt(0, 17);
+        let card = document.createElement("div");
+        card.className = "card";
+        let img = document.createElement("img");
+        img.className = "thePic";
+        img.src = "img/door/" + num + ".PNG";
+        card.addEventListener("click", select);
+
+        card.appendChild(img);
+        return card;
+    }
+
     function createCurse() {
         let card = document.createElement("div");
         card.className = "card";
@@ -134,6 +149,20 @@
         card.append(description);
         card.append(bonus);
         card.append(type);
+        return card;
+    }
+
+    function treasureCard() {
+        let num = getRandomInt(0,29);
+        let card = document.createElement("div");
+        card.className = "card";
+        let img = document.createElement("img");
+        img.className = "thePic";
+        img.src = "img/treasure/" + num + ".PNG";
+        card.addEventListener("click", select);
+
+        card.appendChild(img);
+
         return card;
     }
 
@@ -231,22 +260,25 @@
     }
 
     function getMonsterOrCurse(){
-        let num = getRandomInt(1,10);
+        //let num = getRandomInt(1,10);
         let name = qs(".selectIcon").textContent;
         let player = qs("#" + name);
         let deck = player.children[1];
-        if (num < 4) {
-            let curse = createCurse();
-            deck.append(curse);
-        } else {
-            console.log("monster");
-            let monster = createMonster();
-            deck.append(monster);
-        }
+        let card = doorCard();
+        deck.appendChild(card);
+        // if (num < 4) {
+        //     let curse = createCurse();
+        //     deck.append(curse);
+        // } else {
+        //     console.log("monster");
+        //     let monster = createMonster();
+        //     deck.append(monster);
+        // }
     }
 
     function getTreasure() {
-        let card = createTreasure();
+        //let card = createTreasure();
+        let card = treasureCard();
         let name = qs(".selectIcon").textContent;
         let player = qs("#" + name);
         let deck = player.children[1];
