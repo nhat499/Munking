@@ -14,11 +14,6 @@ const PORT = 3000 || process.env.PORT;
 app.use(express.static(path.join(__dirname, "public")));
 
 
-
-
-
-
-
 let equipsTypes = ["helm", "armor", "weapon", "belt", "medal"];
 let equipsVariety = ["ninja", "samurai", "knight", "paladin", "pirate"];
 
