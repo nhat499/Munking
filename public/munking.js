@@ -6,6 +6,7 @@
 (function() {
     window.addEventListener("load", init);
     const socket = io();
+    connection.socketURL = "/";
 
     socket.on("newConnection", message => {
         console.log(message);
