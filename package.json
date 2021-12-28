@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "socket.io": "^4.4.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "munking",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhat499/Munking.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nhat499/Munking/issues"
+  },
+  "homepage": "https://github.com/nhat499/Munking#readme",
+  "description": "something",
+  "keywords": [
+    "server.js"
+  ]
+}

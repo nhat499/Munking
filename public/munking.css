@@ -1,0 +1,268 @@
+.box {
+    height: 150px;
+    width: 150px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: solid gray 1px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lvBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+h3 {
+    text-align: center;
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+
+.otherPlayerIcon {
+    width: 50px;
+    height: 50px;
+    border: 3px solid black;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-left: 10px;
+    text-align: center;
+    line-height: 50px;
+}
+
+#theplayerInfo {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    width: 80%;
+}
+
+#thePlayerIcon, #theOtherPlayerIcon {
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+p {
+    margin: auto;
+}
+
+#playerIconContainer {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+#deckTreasure {
+    display: flex;
+    flex-direction: row;
+}
+
+.selectCharacter {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#treasure {
+    height: 220px;
+    width: 140px;
+    padding: 10px;
+    border: .5px solid gray;
+    margin-left: 10px;
+}
+
+#adventure {
+    height: 220px;
+    width: 140px;
+    padding: 10px;
+    border: .5px solid gray;
+    margin-right: 10px;
+}
+
+#adventure:hover, #treasure:hover {
+    box-shadow: 2px 2px 2px black;
+}
+
+body {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+.card {
+    height: 220px;
+    width: 130px;
+    min-width: 10em;
+    padding: 10px;
+    
+    border: solid gray 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.joinGame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#equipBtn, #useBtn {
+    height: 50px;
+    width: 70px;
+}
+
+#discardBtn {
+    height: 50px;
+    width: 70px;
+}
+
+btncontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+#thePlayerhand {
+    display: flex;
+    flex-direction: row;
+    max-width: 700px;
+}
+
+.cardWrapper {
+    overflow: hidden;
+    background: white;
+}
+
+.cardWrapper:last-child, .cardWrapper:hover {
+    overflow: visible;
+}
+
+.cardWrapper:hover {
+    position: relative;
+    bottom: 30px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.nameOfCard {
+    text-align: center;
+    font-size: x-large;
+    margin-top: 25%;
+}
+
+.description {
+    text-align: center;
+    font-size: large;
+    margin-top: 20%;
+}
+
+.playerIconOnBoard {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    border: solid gray 0.5px;
+    overflow: hidden;
+    font-size: small;
+    line-height: 35px;
+    text-align: center;
+}
+
+.iconContainer {
+    display: flex;
+}
+
+
+.showSelectedMove {
+    /* height: fit-content;
+    width: fit-content; */
+    height: 250px;
+    width: 80%;
+    position:absolute;
+    border: solid 1px gray;
+    background-color: white;
+    top:16%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.invisiable {
+    visibility: hidden;
+}
+
+.selectedCard {
+    position: relative;
+    overflow: visible;
+    bottom: 30px;
+}
+
+/* .cards {
+    padding: 10px;
+    border-bottom: solid gray 1px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cardPic {
+    height: 70px;
+    width: 100px;
+}
+
+.thePic {
+    height: 230px;
+    width: 160px;
+}
+
+.card > h4 {
+    margin: 10px;
+}
+
+.card > text {
+    font-size: 10px;
+}
+
+.card > h5 {
+    margin: 5px;
+}
+
+
+.selected {
+    border: solid red 3px;
+}
+
+.equip {
+    border: solid blue 3px;
+}
+
+.box > text {
+    margin: 10px;
+}
+
+.selectIcon {
+    border: solid red 3px;
+}
+
+.drawsBtn {
+    height: 200px;
+    width: 140px;
+} */

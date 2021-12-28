@@ -1,0 +1,146 @@
+<!DOCTYPE html> 
+
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Munchkins</title>
+        <link href="munking.css"  rel="stylesheet"/>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="munking.js"></script>
+        
+    </head>
+    <body>
+        <header>
+            <h1>Munchkins</h1>
+        </header>
+        
+        <div class="joinGame">
+            <input id ="PlayerCreateName" placeholder="Name">
+            
+            <div class="selectCharacter">
+                <div class="otherPlayerIcon">player1</div>
+                <div class="otherPlayerIcon">player2</div>
+                <div class="otherPlayerIcon">player3</div>
+                <div class="otherPlayerIcon">player4</div>
+                <div class="otherPlayerIcon">player5</div>
+            </div>
+            <button id="PlayerjoinGameBtn" >start game</button>
+        </div>
+
+        <main class="hidden">
+
+            <div id="playerIconContainer">
+                <div class="otherPlayer">
+                    
+                </div>
+            </div>
+
+            <div id="deckTreasure">
+                <div id="adventure">adventure</div>
+                <div id="treasure">treasure</div>  
+            </div>
+
+            <div class="lvBox">
+                <div class="box" id="0">
+                    <h3>lv. 0</h3> 
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="1">
+                    <h3>lv. 1</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="2">
+                    <h3>lv. 2</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="3">
+                    <h3>lv. 3</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="4">
+                    <h3>lv. 4</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="5">
+                    <h3>lv. 5</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+            </div>
+            <div class="lvBox">
+                <div class="box" id="6">
+                    <h3>lv. 6</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="7">
+                    <h3>lv. 7</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="8">
+                    <h3>lv. 8</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="9">
+                    <h3>lv. 9</h3>
+                    <div class= "iconContainer"></div>
+                </div>
+                <div class="box" id="10">
+                    <h3>lv. 10</h3>
+                    <div class= "iconContainer"></div>
+                </div> 
+            </div>
+            
+            <div id="theplayerInfo">
+                <div id="thePlayerContainer">
+                    <div id="thePlayerIcon">
+                        <p id="helm">basic helm +0</p>
+                        <p id="armor">basic armor +0</p>
+                        <p id="belt">basic belt +0</p>
+                        <p id="weapon">basic weapon +0 </p>
+                        <p id="medal">basic medal +0</p>
+                        <p id="buff"> buff +0</p>
+                    </div>
+                    <h3 id ="playerName" >name</h3>
+                    <h3 id = "attack">attack = 0</h3>
+                </div>
+                <btnContainer class="invisiable">
+                    <button id="equipBtn" class="invisiable">Equip</button>
+                    <button id="useBtn" class="invisiable">Use</button>
+                    <button id="discardBtn">Discard</button>
+                </btnContainer>
+
+                <div id="thePlayerhand">
+                </div>
+            </div>
+
+            
+
+            <div class="hidden showSelectedMove">
+
+                <div id="theOtherPlayerContainer">
+                    <div id="theOtherPlayerIcon">
+                        <p id="battleHelm">basic helm +0</p>
+                        <p id="battleArmor">basic armor +0</p>
+                        <p id="battleBelt">basic belt +0</p>
+                        <p id="battleWeapon">basic weapon +0 </p>
+                        <p id="battleMedal">basic medal +0</p>
+                        <p id="battleBuff">basic buff +0</p>
+                    </div>
+                    <h3 id="otherPlayerName">nhat</h3>
+                    <h3 id="otherAttack">attack = 0</h3>
+                </div>
+
+                <div class="cardWrapper">
+                    <div class="card">
+                        <div class="typeOfCard">Monster</div>
+                        <div class="nameOfCard">slim</div>
+                        <div class="description">lv. 4</div>
+                    </div>
+                </div>
+
+                <button id= "fightBtn" class="hidden">fight</button>
+                <button id= "runBtn" class="hidden">run</button>
+            </div>
+
+        </main>
+    </body>
+</html>
