@@ -1,4 +1,10 @@
 
+// update heroku
+// git add .
+// git commit -m "asdsa"
+// git push heroku
+// heroku open
+
 const express = require('express');
 const app = express();
 const path = require("path")
@@ -86,19 +92,39 @@ io.on("connection", socket => {
         socket.emit("randomCard", playerHand);
 
         // listen for when player goes on an adventure
-        
         socket.on("goOnAdventure", (playerInfo) => {
-            let cardInfo = ["monster", monster[rand(5)], rand(20)];
+            let cardInfo = ["monster", monster[rand(5)], "lv. " + rand(20)];
             playerInfo[8] = cardInfo;
             io.emit("someOneWentonAdventure", playerInfo);
 
             socket.emit("btnEnable", "unhidden fight button");
         });
 
+        // listen for when player update equips on an adventure
+        socket.on("equipInbattle", (playerInfo) => {
+            io.emit("updatePlayerInfo", playerInfo);
+        });
+
+
+        
+    
+
         //listen for when there are no battles
         socket.on("hideBattleFrame", () => {
             io.emit("everyonehideBattleFrame");
         })
+
+        //listen for battle result
+        socket.on("battleResult", (defeatePerson) => {
+            io.emit("updateBattle", defeatePerson);
+        });
+
+        // listen for level changes
+        socket.on("newLevel", (playerInfo) => {
+            io.emit("updateNewLevel", playerInfo);
+        });
+
+        
 
     });
 })

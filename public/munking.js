@@ -28,6 +28,18 @@
     socket.on("everyonehideBattleFrame", () => {
         qs(".showSelectedMove").classList.add("hidden");
     })
+
+    socket.on("updateBattle", (defeatePerson) => {
+        updateBattle(defeatePerson);
+    });
+
+    socket.on("updateNewLevel", (playerInfo) => {
+        updateNewLevel(playerInfo);
+    });
+
+    socket.on("updatePlayerInfo", (playerInfo) => {
+        updatePlayerInfo(playerInfo);
+    })
     
     // let numOfPlayer = 0;
     // let selected = false;
@@ -67,11 +79,64 @@
         // use btn
 
         //fight button
+        qs("#fightBtn").addEventListener("click", fight);
 
 
         //run button
         qs("#runBtn").addEventListener("click", runClicked);
         
+    }
+
+    function fight() {
+        let attack = qs("#otherAttack").textContent.split(" ")[2];
+        let monsterAttack = qs(".showSelectedMove .description").textContent.slice(3);
+        let monsterName =  qs(".showSelectedMove .nameOfCard").textContent;
+        let playerName = qs(".showSelectedMove #otherPlayerName").textContent;
+        if (parseInt(attack) > parseInt(monsterAttack)) {
+            sendbattle(monsterName);
+            sendLevel(playerName, 1);
+        } else {
+            sendbattle(playerName);
+            sendLevel(playerName, -1);
+        }
+    }
+
+    function sendbattle(defeatePerson) {
+        socket.emit("battleResult", defeatePerson);
+    }
+
+    function sendLevel(playerName, levelAdded) {
+        socket.emit("newLevel", [playerName, levelAdded]);
+    }
+
+    function updateBattle(defeatePerson) {
+        qs(".showSelectedMove").classList.add("hidden");
+        let battleResult = qs(".battleResult");
+        battleResult.classList.remove("hidden");
+        battleResult.textContent = defeatePerson + " has been defeated";
+        setTimeout(() => {
+            battleResult.classList.add("hidden");
+        }, 2000)
+    }
+    
+    function updateNewLevel(playerInfo) {
+        console.log(playerInfo);
+        let allPlayerIcon = qsa(".playerIconOnBoard");
+        let i = 0;
+        while (playerInfo[0] != allPlayerIcon[i].textContent) {
+            i++;
+        }
+        let currentLv = allPlayerIcon[i].parentElement.parentElement.
+            children[0].textContent.slice(3);
+        
+        let newLevel = playerInfo[1] + parseInt(currentLv);
+        console.log(newLevel);
+        if (newLevel >= 0) {
+            let newLvBox = document.getElementById(newLevel).children[1];
+            console.log(newLvBox);
+            newLvBox.appendChild(allPlayerIcon[i]);
+        }
+
     }
 
     function equips(inBattle) {
@@ -100,8 +165,7 @@
         updateAttack();
         console.log("inbattle" + inBattle);
         if (inBattle) {
-            //socket.emit("equipInbattle")
-            sendGoOnAdventureInfo();
+            socket.emit("equipInbattle", getPlayerInfo());
         }
 
         btnInvisiable();
@@ -138,13 +202,7 @@
         inBattle = true;
         qs(".showSelectedMove").classList.remove("hidden");
 
-        let otherPlayIcon = qs("#theOtherPlayerIcon");
-        let i;
-        for (i = 0; i< otherPlayIcon.children.length; i++) {
-            otherPlayIcon.children[i].textContent = playerInfo[i];
-        }
-        qs("#otherPlayerName").textContent =playerInfo[i];
-        qs("#otherAttack").textContent=playerInfo[i+1];
+        updatePlayerInfo(playerInfo);
         let monsterCard = qs(".showSelectedMove .card");
 
         let monsterCardInfo = playerInfo[playerInfo.length-1];
@@ -155,7 +213,23 @@
 
     }
 
+    function updatePlayerInfo(playerInfo) {
+        let otherPlayIcon = qs("#theOtherPlayerIcon");
+        let i;
+        for (i = 0; i< otherPlayIcon.children.length; i++) {
+            otherPlayIcon.children[i].textContent = playerInfo[i];
+        }
+        qs("#otherPlayerName").textContent =playerInfo[i];
+        qs("#otherAttack").textContent=playerInfo[i+1];
+    }
+
     function sendGoOnAdventureInfo() {
+        let playerInfo = getPlayerInfo();
+  
+        socket.emit("goOnAdventure", playerInfo);
+    }
+
+    function getPlayerInfo() {
         let thePlayerIcon = qs("#thePlayerIcon");
         let length = thePlayerIcon.children.length;
         let playerInfo = [];
@@ -165,11 +239,8 @@
         }
         playerInfo[i] = qs("#playerName").textContent;
         playerInfo[i+1] = qs("#attack").textContent;
-  
-        socket.emit("goOnAdventure", playerInfo);
+        return playerInfo;
     }
-
-    
 
     function joinGame() {
         // switch from join game screen to play screen
