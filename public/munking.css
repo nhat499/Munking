@@ -3,7 +3,9 @@
     width: 150px;
     margin-right: 10px;
     margin-top: 10px;
-    border: solid gray 1px;
+    border-style: double;
+    border-width: thick;
+    border-color: brown;
 }
 
 main {
@@ -27,12 +29,15 @@ h3 {
 .otherPlayerIcon {
     width: 50px;
     height: 50px;
-    border: 3px solid black;
+    border-style: double;
+    border-width: thick;
+    border-color: brown;
     border-radius: 50%;
     margin-right: 10px;
     margin-left: 10px;
     text-align: center;
     line-height: 50px;
+    background-color: #efe0bb;
 }
 
 #theplayerInfo {
@@ -45,12 +50,16 @@ h3 {
 #thePlayerIcon, #theOtherPlayerIcon {
     width: 200px;
     height: 200px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     border-radius: 50%;
     margin-right: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-style: double;
+    border-color: brown;
+    border-width: thick;
+    background-color: #efe0bb;
 }
 
 p {
@@ -75,41 +84,49 @@ p {
     margin-bottom: 20px;
 }
 
-#treasure {
-    height: 220px;
-    width: 140px;
-    padding: 10px;
-    border: .5px solid gray;
-    margin-left: 10px;
-}
 
-#adventure {
+
+#adventure, #treasure{
     height: 220px;
     width: 140px;
     padding: 10px;
     border: .5px solid gray;
     margin-right: 10px;
+    text-align: center;
+    line-height: 220px;
+    border-style: double;
+    border-width: thick;
+    border-color: brown;
+    font-size: x-large;
+    background-color: #efe0bb;
 }
 
 #adventure:hover, #treasure:hover {
-    box-shadow: 2px 2px 2px black;
+    font-size: xx-large;
 }
 
 body {
     max-width: 100%;
     max-height: 100%;
+    background-color: burlywood;
   }
+
+.typeOfCard, .nameOfCard, .description{
+    color: black;
+}
 
 .card {
     height: 220px;
     width: 130px;
     min-width: 10em;
     padding: 10px;
-    
-    border: solid gray 0.5px;
     display: flex;
     flex-direction: column;
     align-content: center;
+    border-style: double;
+    border-color: brown;
+    border-width: thick;
+    background-color: #efe0bb;
 }
 
 .joinGame {
@@ -118,15 +135,17 @@ body {
     align-items: center;
 }
 
-#equipBtn, #useBtn {
+#equipBtn, #useBtn, #discardBtn{
     height: 50px;
     width: 70px;
+    border-style: double;
+    background-color: antiquewhite;
 }
 
-#discardBtn {
-    height: 50px;
-    width: 70px;
+#equipBtn:hover, #useBtn:hover, #discardBtn:hover {
+    border-width: thick;
 }
+
 
 btncontainer {
     display: flex;
@@ -143,7 +162,6 @@ btncontainer {
 
 .cardWrapper {
     overflow: hidden;
-    background: white;
 }
 
 .cardWrapper:last-child, .cardWrapper:hover {
@@ -157,6 +175,7 @@ btncontainer {
 
 h1 {
     text-align: center;
+    margin: 15px;
 }
 
 .nameOfCard {
@@ -175,15 +194,19 @@ h1 {
     height: 35px;
     width: 35px;
     border-radius: 50%;
-    border: solid gray 0.5px;
+    border-style: double;
+    border-width: thick;
+    border-color: brown;
     overflow: hidden;
     font-size: small;
     line-height: 35px;
     text-align: center;
+    background-color: #efe0bb;
 }
 
 .iconContainer {
     display: flex;
+    flex-wrap: wrap;
 }
 
 
@@ -193,13 +216,17 @@ h1 {
     height: 250px;
     width: 80%;
     position:absolute;
-    border: solid 1px gray;
-    background-color: white;
+    background-color:burlywood;
     top:16%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+
+}
+
+.battleResult {
+    font-size: larger;
 }
 
 .hidden {

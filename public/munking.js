@@ -95,6 +95,7 @@
         if (parseInt(attack) > parseInt(monsterAttack)) {
             sendbattle(monsterName);
             sendLevel(playerName, 1);
+            // get treause function
         } else {
             sendbattle(playerName);
             sendLevel(playerName, -1);
@@ -116,6 +117,7 @@
         battleResult.textContent = defeatePerson + " has been defeated";
         setTimeout(() => {
             battleResult.classList.add("hidden");
+            qs("#deckTreasure").classList.remove("invisiable");
         }, 2000)
     }
     
@@ -201,6 +203,7 @@
     function goOnAdventure(playerInfo) {
         inBattle = true;
         qs(".showSelectedMove").classList.remove("hidden");
+        qs("#deckTreasure").classList.add("invisiable");
 
         updatePlayerInfo(playerInfo);
         let monsterCard = qs(".showSelectedMove .card");
