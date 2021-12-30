@@ -178,6 +178,7 @@
         let giftInfo = [perToSendTo,cardInfo[0].textContent,
         cardInfo[1].textContent, cardInfo[2].textContent];
         socket.emit("sendCard", giftInfo);
+        btnInvisiable();
         card.remove();
         qs("sendtocontainer").classList.add("hidden");
     }
@@ -256,6 +257,7 @@
         let playerName = qs("#playerName").textContent;
         qs("useframe").classList.add("hidden");
         qs(".selectedCard").remove();
+        btnInvisiable();
         socket.emit("buffing", [playerName, buffAmout]);
     }
 

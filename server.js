@@ -157,7 +157,7 @@ io.on("connection", socket => {
             //gift info = [socketid, typeofcard, nameofcard, description];
 
             //send to giftInfo[0];
-            console.log(giftInfo);
+            
             io.to(giftInfo[0]).emit('getGift', giftInfo);
         });
             
