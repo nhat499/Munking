@@ -100,14 +100,22 @@ io.on("connection", socket => {
             socket.emit("btnEnable", "unhidden fight button");
         });
 
+        //listen for when a player is in battle
+        socket.on("inBattle", () => {
+            let inbattle = true;
+            io.emit("updateBattleStatus", inbattle);
+        });
+
+        //listen for when a player leaves battle
+        socket.on("leaveBattle", () => {
+            let inbattle = false;
+            io.emit("updateBattleStatus", inbattle);
+        });
+
         // listen for when player update equips on an adventure
         socket.on("equipInbattle", (playerInfo) => {
             io.emit("updatePlayerInfo", playerInfo);
         });
-
-
-        
-    
 
         //listen for when there are no battles
         socket.on("hideBattleFrame", () => {
@@ -124,7 +132,28 @@ io.on("connection", socket => {
             io.emit("updateNewLevel", playerInfo);
         });
 
+        //listen for buffs
+        socket.on("buffing", buffingInfo => {
+            io.emit("buffup", buffingInfo);
+        });
         
+        //list for treasure request, create and send treasure
+        socket.on("getTreasure", monsterLv => {
+            let numberOfTreasure = (parseInt(monsterLv) / 5) + 1;
+            let allTreausreCard = [];
+            for (let i = 0; i < numberOfTreasure; i++) {
+                if (rand(2) == 0) { // get curse
+                    let curseCard = ["CurseOrBuff", curseOrBuff[rand(5)]];
+                    allTreausreCard[i] = curseCard;
+                } else { // get equips
+                    let equipsCard = ["Equips", equipsVariety[rand(5)] + " " + 
+                        equipsTypes[rand(5)]];
+                    allTreausreCard[i] = equipsCard;
+                }
+            }
+            io.emit("showBossDrop", allTreausreCard);
+            socket.emit("getBossDrop", allTreausreCard);
+        });
 
     });
 })

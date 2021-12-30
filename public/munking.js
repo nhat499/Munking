@@ -26,7 +26,8 @@
     })
 
     socket.on("everyonehideBattleFrame", () => {
-        qs(".showSelectedMove").classList.add("hidden");
+        qs(".battleFrame").classList.add("hidden");
+        qs("#deckTreasure").classList.remove("invisiable");
     })
 
     socket.on("updateBattle", (defeatePerson) => {
@@ -38,8 +39,23 @@
     });
 
     socket.on("updatePlayerInfo", (playerInfo) => {
-        updatePlayerInfo(playerInfo);
+        updatePlayerInfoWOBuff(playerInfo);
     })
+
+    // buffinginfo [whoSendBuff, howMuch]
+    socket.on("buffup", buffingInfo => {
+        displayBuff(buffingInfo);
+    });
+
+    // show boss drop to everyone
+    socket.on("showBossDrop", allTreasureCard => {
+        showBossDrop(allTreasureCard);
+    });
+
+    // getbossDrop
+    socket.on("getBossDrop", allTreasureCard => {
+        getBossDrop(allTreasureCard);
+    });
     
     // let numOfPlayer = 0;
     // let selected = false;
@@ -56,6 +72,7 @@
         // newPlayerBtn.addEventListener("click", createNewPlayer);
         let CurrentPlayerID;
         let inBattle = false;
+        let imInbattle = false;
 
         // joining a game
         const PlayerjoinGameBtn =  qs("#PlayerjoinGameBtn");
@@ -64,8 +81,16 @@
         // going on adventure
         const adventureCard = qs("#adventure");
         adventureCard.addEventListener("click", () => {
-            inBattle = true;
+            //inBattle = true;
+            imInbattle = true;
+            console.log("im in battle");
+            socket.emit("inBattle");
+            console.log("everyone in battle");
             sendGoOnAdventureInfo();
+        });
+
+        socket.on("updateBattleStatus", (battleStatus) => {
+            inBattle = battleStatus;
         });
 
         //discard btn 
@@ -73,33 +98,156 @@
 
         //equip btn
         qs("#equipBtn").addEventListener("click", () => {
-            equips(inBattle);
+            equips(imInbattle);
         });
 
         // use btn
+        qs("#useBtn").addEventListener("click", useBtnPressed);
+    
+        //buffBtn
+        qs("#buffBtn").addEventListener("click", () =>  {
+            if (!inBattle) {
+                notInBattle();
+            } else {
+                let buffAmout = battleBuff(inBattle);
+                sendBuff(buffAmout);
+            }
+        });
+
+        //debuffBtn
+        qs("#debuffBtn").addEventListener("click", () =>  {
+            if (!inBattle) {
+                notInBattle();
+            } else {
+                let buffAmout = battleBuff(inBattle) * -1;
+                sendBuff(buffAmout);
+            }
+        });
 
         //fight button
-        qs("#fightBtn").addEventListener("click", fight);
+        qs("#fightBtn").addEventListener("click", () => {
+            fight();
+            imInbattle = false;
+        });
 
 
         //run button
-        qs("#runBtn").addEventListener("click", runClicked);
+        qs("#runBtn").addEventListener("click", () => {
+            runClicked();
+            imInbattle = false;
+        });
         
+        // closebtn for loot frame
+        qs("closeBtn").addEventListener("click", () => {
+            qs(".lootFrame").classList.add("hidden");
+            qs("#lootContainer").innerHTML = "";
+        })
+    }
+
+    function showBossDrop(allTreasureCard) {
+        console.log(allTreasureCard);
+        let loopConatiner = qs("#lootContainer");
+        let allCard = createTreasureCard(allTreasureCard);
+        for (let i = 0; i< allTreasureCard.length; i++) {
+            loopConatiner.appendChild(allCard[i]);
+        }
+        setTimeout(() => {
+            qs(".lootFrame").classList.remove("hidden");
+        }, 1500);
+    }
+
+    function getBossDrop(allTreasureCard) {
+        let allCard = createTreasureCard(allTreasureCard);
+        let playerHand = qs("#thePlayerhand");
+        for (let i = 0; i< allTreasureCard.length; i++) {
+            playerHand.appendChild(allCard[i]);
+        }
+    }
+
+    function createTreasureCard(allTreasureCard) {
+        let allCard = [allTreasureCard.length];
+        for (let i = 0; i < allTreasureCard.length; i++) {
+            let newCard = createCard();
+            let cardinfo = newCard.children[0];
+            console.log(newCard);
+            if (allTreasureCard[i][0] == "CurseOrBuff") {
+                cardinfo.children[0].textContent = "CurseOrBuff";
+                cardinfo.children[1].textContent = allTreasureCard[i][1];
+            } else if (allTreasureCard[i][0] == "Equips") {
+                cardinfo.children[0].textContent = "Equips";
+                cardinfo.children[1].textContent = allTreasureCard[i][1];
+                cardinfo.children[2].textContent = "+1";
+            }
+            allCard[i] = newCard;
+        }
+        return allCard;
+    }
+
+    function displayBuff(buffinginfo) {
+        let theOtherPlayBuff = qs("#theOtherPlayerIcon > #battleBuff");
+        let newBuff = parseInt(theOtherPlayBuff.textContent.slice(4)) + buffinginfo[1];
+        theOtherPlayBuff.textContent = "buff +" + newBuff;
+        updateOtherPlayerAttack();
+    }
+
+    function updateOtherPlayerAttack() {
+        let theOtherPlayerIcon = qs("#theOtherPlayerIcon").children;
+        let attack = 0;
+        for (let i = 0; i < 5; i++) {
+            attack += parseInt(theOtherPlayerIcon[i].textContent.split(" ")[2]);
+    
+        }
+        attack += parseInt(theOtherPlayerIcon[5].textContent.split(" ")[1]);
+        qs("#otherAttack").textContent = "attack = " + attack;
+    }
+
+    function useBtnPressed() {
+        let useFrame = qs("useFrame");
+        useFrame.classList.remove("hidden");
+        qs("#cancelBtn").addEventListener("click", ()=> {
+            useFrame.classList.add("hidden");
+        });
+    }
+
+    function sendBuff(buffAmout) {
+        let playerName = qs("#playerName").textContent;
+        qs("useframe").classList.add("hidden");
+        qs(".selectedCard").remove();
+        socket.emit("buffing", [playerName, buffAmout]);
+    }
+
+
+
+    function battleBuff() {
+        let selectBuff = qs(".selectedCard").firstChild.children[1];
+        return parseInt(selectBuff.textContent);
+    }
+
+    function notInBattle() {
+        let useFrameMessage = qs("useFrameMessage");
+        useFrameMessage.classList.remove("hidden");
+        setTimeout(() => {
+        useFrameMessage.classList.add("hidden");
+        }, 1500)
     }
 
     function fight() {
         let attack = qs("#otherAttack").textContent.split(" ")[2];
-        let monsterAttack = qs(".showSelectedMove .description").textContent.slice(3);
-        let monsterName =  qs(".showSelectedMove .nameOfCard").textContent;
-        let playerName = qs(".showSelectedMove #otherPlayerName").textContent;
+        let monsterAttack = qs(".battleFrame .description").textContent.slice(3);
+        let monsterName =  qs(".battleFrame .nameOfCard").textContent;
+        let playerName = qs(".battleFrame #otherPlayerName").textContent;
         if (parseInt(attack) > parseInt(monsterAttack)) {
             sendbattle(monsterName);
-            sendLevel(playerName, 1);
+            sendLevel(playerName, 1); // level up one
             // get treause function
+            
+            socket.emit("getTreasure", monsterAttack);
         } else {
             sendbattle(playerName);
             sendLevel(playerName, -1);
         }
+        disableButton(); ///////
+        socket.emit("leaveBattle");
     }
 
     function sendbattle(defeatePerson) {
@@ -111,18 +259,18 @@
     }
 
     function updateBattle(defeatePerson) {
-        qs(".showSelectedMove").classList.add("hidden");
+        qs(".battleFrame").classList.add("hidden");
         let battleResult = qs(".battleResult");
         battleResult.classList.remove("hidden");
         battleResult.textContent = defeatePerson + " has been defeated";
         setTimeout(() => {
             battleResult.classList.add("hidden");
             qs("#deckTreasure").classList.remove("invisiable");
-        }, 2000)
+            
+        }, 1500)
     }
     
     function updateNewLevel(playerInfo) {
-        console.log(playerInfo);
         let allPlayerIcon = qsa(".playerIconOnBoard");
         let i = 0;
         while (playerInfo[0] != allPlayerIcon[i].textContent) {
@@ -130,32 +278,22 @@
         }
         let currentLv = allPlayerIcon[i].parentElement.parentElement.
             children[0].textContent.slice(3);
-        
         let newLevel = playerInfo[1] + parseInt(currentLv);
-        console.log(newLevel);
         if (newLevel >= 0) {
             let newLvBox = document.getElementById(newLevel).children[1];
-            console.log(newLvBox);
             newLvBox.appendChild(allPlayerIcon[i]);
         }
 
     }
 
-    function equips(inBattle) {
+    function equips(imInBattle) {
         let cardWrapper = qs(".selectedCard");
         let nameOfCard = cardWrapper.firstChild.children[1].textContent;
         let nameOfCardArray = nameOfCard.split(" ");
         let addition = cardWrapper.firstChild.children[2].textContent;
-        console.log(nameOfCard);
-        console.log(addition);
         let currentEquip = qs("#"+nameOfCardArray[1])
-        
         let currentEquipArray = currentEquip.textContent.split(" ");
-        console.log(currentEquipArray[0]); //good
-        console.log(nameOfCardArray[0]);
         if (currentEquipArray[0] == nameOfCardArray[0]) {
-            console.log(currentEquipArray[2].slice(1)); // good
-            console.log(addition.slice(1));
             let newBonus = parseInt(addition.slice(1)) + 
                 parseInt(currentEquipArray[2].slice(1));
             currentEquip.textContent = nameOfCard + " +"+ newBonus
@@ -163,11 +301,9 @@
         } else {
             currentEquip.textContent = nameOfCard + " " + addition;
         }
-
         updateAttack();
-        console.log("inbattle" + inBattle);
-        if (inBattle) {
-            socket.emit("equipInbattle", getPlayerInfo());
+        if (imInBattle) {
+            socket.emit("equipInbattle", getPlayerInfo()); /////////////////////////
         }
 
         btnInvisiable();
@@ -177,9 +313,11 @@
     function updateAttack() {
         let thePlayerIcon = qs("#thePlayerIcon").children;
         let attack = 0;
-        for (let i = 0; i < 6; i++) {
-            attack += parseInt(thePlayerIcon[i].textContent.split(" ")[2].slice(1));
+        for (let i = 0; i < 5; i++) {
+            attack += parseInt(thePlayerIcon[i].textContent.split(" ")[2]);
+            
         }
+        attack += parseInt(thePlayerIcon[5].textContent.split(" ")[1]);
         qs("#attack").textContent = "attack = " + attack;
     }
 
@@ -195,18 +333,22 @@
     }
 
     function runClicked() {
-        inBattle = false;
+        //inBattle = false;
+        console.log("im not in battle");
+        socket.emit("leaveBattle");
+        console.log("everyone not in battle");
         disableButton();
         socket.emit("hideBattleFrame");
     }
 
     function goOnAdventure(playerInfo) {
-        inBattle = true;
-        qs(".showSelectedMove").classList.remove("hidden");
+        socket.emit("inBattle");
+        console.log("everyone in battle");
+        qs(".battleFrame").classList.remove("hidden");
         qs("#deckTreasure").classList.add("invisiable");
 
         updatePlayerInfo(playerInfo);
-        let monsterCard = qs(".showSelectedMove .card");
+        let monsterCard = qs(".battleFrame .card");
 
         let monsterCardInfo = playerInfo[playerInfo.length-1];
         for (let j = 0; j < 3; j++) {
@@ -222,17 +364,27 @@
         for (i = 0; i< otherPlayIcon.children.length; i++) {
             otherPlayIcon.children[i].textContent = playerInfo[i];
         }
-        qs("#otherPlayerName").textContent =playerInfo[i];
-        qs("#otherAttack").textContent=playerInfo[i+1];
+        qs("#otherPlayerName").textContent =playerInfo[i]; 
+        qs("#otherAttack").textContent=playerInfo[i+1]; 
+    }
+
+    function updatePlayerInfoWOBuff(playerInfo) {
+        let otherPlayIcon = qs("#theOtherPlayerIcon");
+        let i;
+        for (i = 0; i< otherPlayIcon.children.length -1; i++) {
+            otherPlayIcon.children[i].textContent = playerInfo[i];
+        }
+        qs("#otherPlayerName").textContent =playerInfo[i+1]; 
+        updateOtherPlayerAttack();
     }
 
     function sendGoOnAdventureInfo() {
-        let playerInfo = getPlayerInfo();
-  
+        let playerInfo = getPlayerInfo();           /////////////////////
+
         socket.emit("goOnAdventure", playerInfo);
     }
 
-    function getPlayerInfo() {
+    function getPlayerInfo() {                        /////////////////////////
         let thePlayerIcon = qs("#thePlayerIcon");
         let length = thePlayerIcon.children.length;
         let playerInfo = [];
@@ -242,6 +394,7 @@
         }
         playerInfo[i] = qs("#playerName").textContent;
         playerInfo[i+1] = qs("#attack").textContent;
+
         return playerInfo;
     }
 
@@ -265,7 +418,6 @@
 
     // upload random card to the currect player's hand
     function getCardsToCurrentPlayerHand(cardArray) {
-        console.log(cardArray);
         let thePlayerhand = qs("#thePlayerhand");
         for (let i = 0; i < 7; i++) {
             let card = createCard();
@@ -357,317 +509,6 @@
         otherPlayer.appendChild(otherPlayerIcon);
         otherPlayer.appendChild(name);
         qs("#playerIconContainer").appendChild(otherPlayer);
-    }
-
-
-   /* 
-    function createNewPlayer() {
-        numOfPlayer++;
-        let players = qs("#players");
-        let name = qs("#name").value;
-        let lvBox = qsa(".box")[0];
-        
-        let thePlayer = document.createElement("div");
-        thePlayer.id = name;
-        let playerName = document.createElement("h3");
-        let nameTag = document.createElement("text");
-        nameTag.textContent = name;
-
-        nameTag.addEventListener("click", selectIcon);
-        playerName.textContent = "player " + numOfPlayer + ": " + name + " ";
-        let att = document.createElement("text");
-        att.textContent = "0";
-        playerName.appendChild(att);
-
-        let playerCards = document.createElement("div");
-
-        playerCards.className = "cards";
-        for (let i = 0; i < 2; i++) {
-            //let card = createMonster();
-            let card = doorCard();
-            playerCards.appendChild(card);
-        }
-        for (let i = 0; i < 3; i++) {
-            //let card = createTreasure();
-            let card = treasureCard();
-            playerCards.appendChild(card);
-        }
-        lvBox.appendChild(nameTag);
-        thePlayer.appendChild(playerName);
-        thePlayer.appendChild(playerCards);
-        playerCards.classList.add("hidden");
-
-        let reveal = document.createElement("button");
-        reveal.addEventListener("click", revealftn);
-        reveal.textContent = "reveal";
-        let hide = document.createElement("button");
-        hide.textContent = "hide";
-        hide.addEventListener("click", hideftn);
-        thePlayer.append(reveal);
-        thePlayer.append(hide);
-        players.appendChild(thePlayer);
-        
-    }
-
-    function createMonster() {
-        let card = document.createElement("div");
-        card.className = "card";
-        let name = document.createElement("h4");
-        name.textContent = "monster-name";
-        let img = document.createElement("img");
-        img.className = "cardPic";
-        img.src = "img/monster.PNG";
-        let description = document.createElement("text");
-        description.textContent = "something something something something";
-        let numlv = getRandomInt(1, 15);
-        let level = document.createElement("h5");
-        level.textContent = "level: " + numlv;
-        
-        let treasure = document.createElement("h5");
-        let numTreasure = 3;
-        if ( numlv < 5) {
-            numTreasure =  1;
-        } else if (numlv >= 5 && numlv <= 10) {
-            numTreasure = 2;
-        }
-        treasure.textContent = numTreasure + " treasure";
-        card.addEventListener("click", select);
-
-        card.append(name);
-        card.append(img);
-        card.append(description);
-        card.append(level);
-        card.append(treasure);
-        return card;
-    }
-
-    function doorCard() {
-        let num = getRandomInt(0, 18);
-        let card = document.createElement("div");
-        card.className = "card";
-        let img = document.createElement("img");
-        img.className = "thePic";
-        img.src = "img/door/" + num + ".PNG";
-        card.addEventListener("click", select);
-
-        card.appendChild(img);
-        return card;
-    }
-
-    function createCurse() {
-        let card = document.createElement("div");
-        card.className = "card";
-        let name = document.createElement("h4");
-        name.textContent = "curse-name";
-        let img = document.createElement("img");
-        img.src = "img/curse.PNG";
-        img.className = "cardPic";
-        let desCription = document.createElement("text");
-        desCription.textContent = curses[getRandomInt(0,4)];
-        card.addEventListener("click", select);
-
-        card.append(name);
-        card.append(img);
-        card.append(desCription);
-        return card;
-    }
-
-    function createTreasure() {
-        let card = document.createElement("div");
-        card.className = "card";
-        let name = document.createElement("h4");
-        name.textContent = "treasure-name";
-        let img = document.createElement("img");
-        img.className = "cardPic";
-        img.src = "img/treasure.PNG";
-        let description = document.createElement("text");
-        description.textContent = "something something something something";
-        let bonusAmount = getRandomInt(2, 5);
-        let bonus = document.createElement("h5");
-        bonus.textContent = "+" + bonusAmount;
-        let type = document.createElement("h5");
-        type.textContent = treasure[getRandomInt(0, 5)];
-        card.addEventListener("click", select);
-
-        card.append(name);
-        card.append(img);
-        card.append(description);
-        card.append(bonus);
-        card.append(type);
-        return card;
-    }
-
-    function treasureCard() {
-        let num = getRandomInt(0,31);
-        let card = document.createElement("div");
-        card.className = "card";
-        let img = document.createElement("img");
-        img.className = "thePic";
-        img.src = "img/treasure/" + num + ".PNG";
-        card.addEventListener("click", select);
-
-        card.appendChild(img);
-
-        return card;
-    }
-
-    function select() {
-        if (selected == false) {
-            this.classList.add("selected");
-            selected = true;
-            let use = document.createElement("button");
-            use.id = "usebtn";
-            use.textContent = "use";
-            let cards = this.parentNode;
-            use.addEventListener("click", getRidOff);
-            cards.append(use);
-
-            let equip = document.createElement("button");
-            equip.id = "equip";
-            equip.textContent = "equip";
-            equip.addEventListener("click", equiping);
-            cards.appendChild(equip);
-
-            let trade = document.createElement("button");
-            trade.id = "trade";
-            trade.textContent = "trade";
-            trade.addEventListener("click", trading);
-            cards.append(trade);
-            let tradeTo = document.createElement("input");
-            tradeTo.id = "tradeTo";
-            cards.appendChild(tradeTo);
-
-        } else if (this.classList.contains("selected")) {
-            this.classList.remove("selected");
-            selected = false;
-            qs("#usebtn").remove();
-            qs("#tradeTo").remove();
-            qs("#trade").remove();
-            qs("#equip").remove();
-        }
-    }
-
-    function selectIcon() {
-        if (selectedIcon == false) {
-            this.classList.add("selectIcon");
-            selectedIcon = true;
-            let doorBtn = document.createElement("button");
-            doorBtn.textContent = "KickDown door";
-            doorBtn.className = "drawsBtn";
-            doorBtn.addEventListener("click", getMonsterOrCurse);
-
-            let treasureBtn = document.createElement("button");
-            treasureBtn.className = "drawsBtn";
-            treasureBtn.textContent = "get Treasure";
-            treasureBtn.addEventListener("click", getTreasure);
-
-            let doorAndTreasure = qs("#draws");
-
-            doorAndTreasure.append(doorBtn);
-            doorAndTreasure.appendChild(treasureBtn);
-
-            let lvUpBtn = document.createElement("button");
-            lvUpBtn.textContent = "lv up";
-            lvUpBtn.className = "drawsBtn";
-            lvUpBtn.addEventListener("click", levelUp);
-
-            let lvDownBtn = document.createElement("button");
-            lvDownBtn.textContent = "lv down";
-            lvDownBtn.className = "drawsBtn";
-            lvDownBtn.addEventListener("click", levelDown);
-
-            doorAndTreasure.append(lvUpBtn);
-            doorAndTreasure.append(lvDownBtn);
-
-        } else if (this.classList.contains("selectIcon")) {
-            this.classList.remove("selectIcon");
-            let button = qsa(".drawsBtn");
-            for (let i = 0; i < button.length; i ++) {
-                button[i].remove();
-            }
-            selectedIcon = false;
-        }
-        
-    }
-
-    function levelUp() {
-        let player = qs(".selectIcon");
-        let nextLv = parseInt(player.parentNode.id);
-        let nextBox = player.parentNode.parentNode.children[nextLv];
-        nextBox.append(player);
-    }
-
-    function levelDown() {
-        let player = qs(".selectIcon");
-        let previousLv = parseInt(player.parentNode.id) - 2;
-        let previousBox = player.parentNode.parentNode.children[previousLv];
-        previousBox.append(player);
-    }
-
-    function getMonsterOrCurse(){
-        //let num = getRandomInt(1,10);
-        let name = qs(".selectIcon").textContent;
-        let player = qs("#" + name);
-        let deck = player.children[1];
-        let card = doorCard();
-        deck.appendChild(card);
-        // if (num < 4) {
-        //     let curse = createCurse();
-        //     deck.append(curse);
-        // } else {
-        //     console.log("monster");
-        //     let monster = createMonster();
-        //     deck.append(monster);
-        // }
-    }
-
-    function getTreasure() {
-        //let card = createTreasure();
-        let card = treasureCard();
-        let name = qs(".selectIcon").textContent;
-        let player = qs("#" + name);
-        let deck = player.children[1];
-        deck.appendChild(card);
-    }
-
-    function equiping() {
-        let card = qs(".selected");
-        let current = card.parentNode.parentNode.children[0].children[0];
-        let bonus = parseInt(card.children[3].textContent.substring(1));
-        if (!qs(".selected").classList.contains("equip")) {
-            
-            card.classList.add("equip");
-            current.textContent = bonus + parseInt(current.textContent);
-            console.log(current);
-        } else {
-            qs(".selected").classList.remove("equip");
-            current.textContent = parseInt(current.textContent) - bonus;
-        }
-    }
-
-    function trading() {
-        let name = qs("#tradeTo").value;
-        let person = qs("#" + name);
-        let deck = person.children[1];
-        deck.append(qs(".selected"));
-        console.log(deck);
-    }
-
-    function getRidOff() {
-        qs(".selected").remove();
-        qs("#tradeTo").remove();
-        qs("#trade").remove();
-        qs("#equip").remove();
-        this.remove();
-        selected = false;
-    }
-*/
-    function revealftn() {
-        this.previousSibling.classList.remove("hidden");
-    }
-
-    function hideftn() {
-        this.previousSibling.previousSibling.classList.add("hidden");
     }
 
     function getRandomInt(min, max) {

@@ -97,7 +97,7 @@
                         <p id="belt">basic belt +0</p>
                         <p id="weapon">basic weapon +0 </p>
                         <p id="medal">basic medal +0</p>
-                        <p id="buff"> buff +0</p>
+                        <p id="buff">buff +0</p>
                     </div>
                     <h3 id ="playerName" >name</h3>
                     <h3 id = "attack">attack = 0</h3>
@@ -112,9 +112,13 @@
                 </div>
             </div>
 
-            
+            <div class="lootFrame hidden">
+                <closeBtn>x</closeBtn>
+                <h3>Loot</h3>
+                <div id="lootContainer"></div>
+            </div>
 
-            <div class="hidden showSelectedMove">
+            <div class="hidden battleFrame">
 
                 <div id="theOtherPlayerContainer">
                     <div id="theOtherPlayerIcon">
@@ -123,7 +127,7 @@
                         <p id="battleBelt">basic belt +0</p>
                         <p id="battleWeapon">basic weapon +0 </p>
                         <p id="battleMedal">basic medal +0</p>
-                        <p id="battleBuff">basic buff +0</p>
+                        <p id="battleBuff">buff +0</p>
                     </div>
                     <h3 id="otherPlayerName">nhat</h3>
                     <h3 id="otherAttack">attack = 0</h3>
@@ -142,6 +146,14 @@
             </div>
 
             <div class="battleResult hidden"></div>
+
+            <useFrame class="hidden">
+                <button id="buffBtn">buff</button>
+                <button id="debuffBtn">debuff</button>
+                <button id="cancelBtn">cancel</button>
+            </useFrame>
+
+            <useFrameMessage class="hidden">can only be use in battle</useFrameMessage>
 
         </main>
     </body>

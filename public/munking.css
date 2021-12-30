@@ -5,7 +5,7 @@
     margin-top: 10px;
     border-style: double;
     border-width: thick;
-    border-color: brown;
+    border-color: darkgreen;
 }
 
 main {
@@ -18,6 +18,7 @@ main {
     display: flex;
     flex-direction: row;
     align-items: center;
+    max-width: 80%;
 }
 
 h3 {
@@ -135,16 +136,18 @@ body {
     align-items: center;
 }
 
-#equipBtn, #useBtn, #discardBtn{
+#equipBtn, #useBtn, #discardBtn, #fightBtn, #runBtn, #buffBtn, #debuffBtn, #cancelBtn {
     height: 50px;
     width: 70px;
     border-style: double;
     background-color: antiquewhite;
 }
 
-#equipBtn:hover, #useBtn:hover, #discardBtn:hover {
+#equipBtn:hover, #useBtn:hover, #discardBtn:hover, 
+#fightBtn:hover, #runBtn:hover, #buffBtn:hover, #debuffBtn:hover, #cancelBtn:hover{
     border-width: thick;
 }
+
 
 
 btncontainer {
@@ -157,7 +160,8 @@ btncontainer {
 #thePlayerhand {
     display: flex;
     flex-direction: row;
-    max-width: 700px;
+    max-width: 80%;
+    margin-right: 100px;
 }
 
 .cardWrapper {
@@ -210,7 +214,7 @@ h1 {
 }
 
 
-.showSelectedMove, .battleResult {
+.battleFrame, .battleResult {
     /* height: fit-content;
     width: fit-content; */
     height: 250px;
@@ -223,6 +227,37 @@ h1 {
     align-items: center;
     justify-content: center;
 
+}
+
+closeBtn {
+    text-align: right;
+    padding-right: 5px;
+    user-select: none;
+}
+
+closeBtn:hover {
+    color: red;
+    
+}
+
+.lootFrame {
+    height: 300px;
+    width: 55%;
+    position:absolute;
+    background-color:burlywood;
+    top:30%;
+    display: flex;
+    flex-direction: column;
+    border-style: double;
+    border-width: thick;
+    border-color: darkgreen;
+}
+
+
+#lootContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .battleResult {
@@ -241,6 +276,20 @@ h1 {
     position: relative;
     overflow: visible;
     bottom: 30px;
+}
+
+useFrame, useFrameMessage{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position:absolute;
+    top: 50%;
+    width: 25%;
+    height: 20%;
+    background-color: #efe0bb;
+    border-style: double;
+    border-width: thick;
+    border-color: brown;
 }
 
 /* .cards {
