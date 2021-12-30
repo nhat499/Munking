@@ -7,10 +7,15 @@
     window.addEventListener("load", init);
     const socket = io();
 
-    socket.on("newConnection", message => {
-        console.log(message);
-        console.log(socket.id);
+
+    socket.on("newConnection", numOfPlayer => {
+        updateNumberOfPlayer(numOfPlayer);
     });
+
+    socket.on("removePlayer", id => {
+        console.log("everyone remove" + id);
+        removePlayer(id);
+    })
 
     socket.on("addnewPlayer", playerName => {
         addnewPlayer(playerName);
@@ -158,6 +163,26 @@
 
         // cancel send btn
         qs("#cancelSendBtn").addEventListener("click", cancel);
+    }
+
+    function removePlayer(id) {
+        let player = qs("#"+id).parentElement;
+        let playerName = player.children[1].textContent;
+        player.remove();
+        let allPlayer = qsa(".playerIconOnBoard");
+        for (let i = 0; i < allPlayer.length; i++) {
+            if (allPlayer[i].textContent = playerName) {
+                allPlayer[i].remove();
+                return;
+            }
+        }
+    }
+
+    function updateNumberOfPlayer(numOFPlayer) {
+        qs("#PlayerjoinGameBtn").classList.remove("hidden");
+        qs(".WaitForHost").classList.remove("hidden");
+        let currentPlayer = qs("#currentPlayer");
+        currentPlayer.textContent = "Number Of Player Connected: " + numOFPlayer;
     }
 
     function getGift(giftInfo) {
@@ -444,6 +469,7 @@
     }
 
     function joinGame() {
+
         // switch from join game screen to play screen
         qs("main").classList.remove("hidden");
         qs(".joinGame").classList.add("hidden");

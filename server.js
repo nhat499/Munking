@@ -29,6 +29,8 @@ let monster = ["dragon", "golem", "giant", "slim", "ogre"];
 
 // special card -- immplement later
 
+let numOfPlayer = 0;
+
 function rand(limit) {
     return Math.floor(Math.random() * limit) // 0 to (limit - 1)
 }
@@ -36,11 +38,15 @@ function rand(limit) {
 
 // run when client connect
 io.on("connection", socket => {
+    numOfPlayer++;
 
+    socket.off("connection", () => {
+            console.log("a user join after the game started");
+        }
+    );
 
     // emit to single client
-    socket.emit("newConnection", ["welcome to munking: " + socket.id]);
-
+    io.emit("newConnection", numOfPlayer);   
     // emit to everybody except the user
     //socket.broadcast.emit()
 
@@ -55,7 +61,8 @@ io.on("connection", socket => {
 
     //run when client disconet
     socket.on("disconnect", () => {
-        io.emit("message", "a user have left");
+        numOfPlayer--;
+        io.emit("removePlayer", socket.id);
     });
 
     // listen for new player to join the game
