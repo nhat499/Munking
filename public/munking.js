@@ -9,7 +9,7 @@
 
     socket.on("newConnection", message => {
         console.log(message);
-        CurrentPlayerID = message[1];
+        console.log(socket.id);
     });
 
     socket.on("addnewPlayer", playerName => {
@@ -57,6 +57,11 @@
         getBossDrop(allTreasureCard);
     });
     
+    // get gift from another player
+    socket.on("getGift", (giftInfo) => {
+        getGift(giftInfo);
+    });
+
     // let numOfPlayer = 0;
     // let selected = false;
     // let selectedIcon = false;
@@ -70,13 +75,13 @@
     function init() {
         // let newPlayerBtn = qs("#newPlayer");
         // newPlayerBtn.addEventListener("click", createNewPlayer);
-        let CurrentPlayerID;
         let inBattle = false;
         let imInbattle = false;
 
-        // joining a game
         const PlayerjoinGameBtn =  qs("#PlayerjoinGameBtn");
-        PlayerjoinGameBtn.addEventListener("click", joinGame);
+        PlayerjoinGameBtn.addEventListener("click", () => {
+            joinGame();
+        });
 
         // going on adventure
         const adventureCard = qs("#adventure");
@@ -89,6 +94,7 @@
             sendGoOnAdventureInfo();
         });
 
+        // update battle status if anyone is in battle
         socket.on("updateBattleStatus", (battleStatus) => {
             inBattle = battleStatus;
         });
@@ -130,7 +136,6 @@
             imInbattle = false;
         });
 
-
         //run button
         qs("#runBtn").addEventListener("click", () => {
             runClicked();
@@ -141,7 +146,40 @@
         qs("closeBtn").addEventListener("click", () => {
             qs(".lootFrame").classList.add("hidden");
             qs("#lootContainer").innerHTML = "";
-        })
+        });
+
+        // sendto... btn
+        qs("#sendToBtn").addEventListener("click", () => {
+            qs("sendToContainer").classList.remove("hidden");
+        });
+
+        //
+        qs("#sendBtn").addEventListener("click", sendCardToServer);
+
+        // cancel send btn
+        qs("#cancelSendBtn").addEventListener("click", cancel);
+    }
+
+    function getGift(giftInfo) {
+        alert("you got a gift");
+        console.log(giftInfo);
+        let newCard = createCard();
+        let cardInfo = newCard.children[0].children;
+        for (let i = 0; i < cardInfo.length; i++) {
+            cardInfo[i].textContent = giftInfo[i+1];
+        }
+        qs("#thePlayerhand").appendChild(newCard);
+    }
+
+    function sendCardToServer() {
+        let card = qs(".selectedCard");
+        let cardInfo = card.children[0].children;
+        let perToSendTo = qs(".selectedIcon").firstChild.id;
+        let giftInfo = [perToSendTo,cardInfo[0].textContent,
+        cardInfo[1].textContent, cardInfo[2].textContent];
+        socket.emit("sendCard", giftInfo);
+        card.remove();
+        qs("sendtocontainer").classList.add("hidden");
     }
 
     function showBossDrop(allTreasureCard) {
@@ -413,7 +451,7 @@
         qs("#playerName").textContent = name;
 
         // update other player that a new player join
-        socket.emit("joinGame", name);
+        socket.emit("joinGame", [name, socket.id]);
 
         // generate cards for current player
         socket.on("randomCard", cardArray => {
@@ -499,21 +537,48 @@
     }
     
     function addnewPlayer(playerName) {
+        console.log("addnewPlayer");
+        console.log(playerName);
         let otherPlayer = document.createElement("div");
         otherPlayer.classList.add("otherPlayer");
         let otherPlayerIcon = document.createElement("div");
         otherPlayerIcon.classList.add("otherPlayerIcon");
+        otherPlayerIcon.id = playerName[1];
         otherPlayerIcon.textContent = 0;
         let name = document.createElement("h3");
-        name.textContent = playerName;
+        name.textContent = playerName[0];
 
         let newIconOnBoard = document.createElement("div");
         newIconOnBoard.classList.add("playerIconOnBoard");
-        newIconOnBoard.textContent = playerName;
+        newIconOnBoard.textContent = playerName[0];
         qs(".iconContainer").appendChild(newIconOnBoard);
         otherPlayer.appendChild(otherPlayerIcon);
         otherPlayer.appendChild(name);
+        let otherplayerClone = otherPlayer.cloneNode(true);
+        otherplayerClone.addEventListener("click", selectIcon);
+        qs("sendTo").appendChild(otherplayerClone);
         qs("#playerIconContainer").appendChild(otherPlayer);
+    }
+
+    function selectIcon() {
+        let allSelectedIcon = qsa(".selectedIcon");
+        let sendBtn = qs("#sendBtn");
+        if (this.classList.contains("selectedIcon")) {
+            this.classList.remove("selectedIcon");
+            sendBtn.classList.add("invisiable");
+        } else {
+            for (let i = 0; i < allSelectedIcon.length; i++) {
+                allSelectedIcon[0].classList.remove("selectedIcon");
+            }
+            this.classList.add("selectedIcon");
+            sendBtn.classList.remove("invisiable");
+        }
+    }
+
+    function cancel() {
+        qs("#sendBtn").classList.add("invisiable");
+        qs(".selectedIcon").classList.remove("selectedIcon");
+        qs("sendtocontainer").classList.add("hidden");
     }
 
     function getRandomInt(min, max) {

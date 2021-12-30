@@ -105,6 +105,7 @@
                 <btnContainer class="invisiable">
                     <button id="equipBtn" class="invisiable">Equip</button>
                     <button id="useBtn" class="invisiable">Use</button>
+                    <button id="sendToBtn" class="">Send To...</button>
                     <button id="discardBtn">Discard</button>
                 </btnContainer>
 
@@ -141,19 +142,42 @@
                     </div>
                 </div>
 
-                <button id= "fightBtn" class="hidden">fight</button>
-                <button id= "runBtn" class="hidden">run</button>
+                <button id= "fightBtn" class="hidden">Fight</button>
+                <button id= "runBtn" class="hidden">Run</button>
             </div>
 
             <div class="battleResult hidden"></div>
 
             <useFrame class="hidden">
-                <button id="buffBtn">buff</button>
-                <button id="debuffBtn">debuff</button>
-                <button id="cancelBtn">cancel</button>
+                <button id="buffBtn">Buff</button>
+                <button id="debuffBtn">Debuff</button>
+                <button id="cancelBtn">Cancel</button>
             </useFrame>
 
-            <useFrameMessage class="hidden">can only be use in battle</useFrameMessage>
+            <useFrameMessage class="hidden">Can only be use in battle</useFrameMessage>
+            
+            <sendToContainer class="hidden">
+                <h3>Send to ...</h3>
+                <sendTo>
+    
+                    <!-- <div class="otherPlayer">
+                        <div class="otherPlayerIcon" id="TeYgRoawRrdGeCHLAAAT">0</div>
+                        <h3>nhat</h3>
+                    </div>
+                    <div class="otherPlayer">
+                        <div class="otherPlayerIcon" id="TeYgRoawRrdGeCHLAAAT">0</div>
+                        <h3>nhat</h3>
+                    </div>
+                    <div class="otherPlayer">
+                        <div class="otherPlayerIcon" id="TeYgRoawRrdGeCHLAAAT">0</div>
+                        <h3>nhat</h3>
+                    </div> -->
+    
+                </sendTo>
+                <button class="invisiable" id="sendBtn">Send</button>
+                <button id="cancelSendBtn">cancel</button>
+            </sendToContainer>
+
 
         </main>
     </body>

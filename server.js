@@ -34,9 +34,6 @@ function rand(limit) {
 }
 
 
-
-
-
 // run when client connect
 io.on("connection", socket => {
 
@@ -51,7 +48,7 @@ io.on("connection", socket => {
     // io.emit()
 
     // to a specific client
-    //socket.id and use io.sockets.socket(savedSocketId).emit(...)
+    // io.to(socketid).emit('message', 'for your eyes only');
 
     // test to see if u can send array
     
@@ -63,7 +60,7 @@ io.on("connection", socket => {
 
     // listen for new player to join the game
     socket.on("joinGame", (player) => {
-        // update other player that new player has join
+
         io.emit("addnewPlayer", player);
         
         // create random hand
@@ -155,6 +152,15 @@ io.on("connection", socket => {
             socket.emit("getBossDrop", allTreausreCard);
         });
 
+        // listen when a player want to send another player a card
+        socket.on("sendCard", (giftInfo) => {
+            //gift info = [socketid, typeofcard, nameofcard, description];
+
+            //send to giftInfo[0];
+            console.log(giftInfo);
+            io.to(giftInfo[0]).emit('getGift', giftInfo);
+        });
+            
     });
 })
 
