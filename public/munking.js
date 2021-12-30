@@ -215,7 +215,7 @@
             } else if (allTreasureCard[i][0] == "Equips") {
                 cardinfo.children[0].textContent = "Equips";
                 cardinfo.children[1].textContent = allTreasureCard[i][1];
-                cardinfo.children[2].textContent = "+1";
+                cardinfo.children[2].textContent = "+3";
             }
             allCard[i] = newCard;
         }
@@ -470,7 +470,7 @@
             if (i < 3) {
                 cardInfo[0].textContent = "Equips";
                 cardInfo[1].textContent = cardArray[i];
-                cardInfo[2].textContent = "+1";
+                cardInfo[2].textContent = "+3";
             } else if (i < 5) {
                 cardInfo[0].textContent = "CurseOrBuff";
                 cardInfo[1].textContent = cardArray[i];
