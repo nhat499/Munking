@@ -186,7 +186,12 @@
     function displayBuff(buffinginfo) {
         let theOtherPlayBuff = qs("#theOtherPlayerIcon > #battleBuff");
         let newBuff = parseInt(theOtherPlayBuff.textContent.slice(4)) + buffinginfo[1];
-        theOtherPlayBuff.textContent = "buff +" + newBuff;
+        if (newBuff < 0) {
+            theOtherPlayBuff.textContent = "buff " + newBuff;
+        } else {
+            theOtherPlayBuff.textContent = "buff +" + newBuff;
+        }
+        // show who send the buff/debuff
         updateOtherPlayerAttack();
     }
 
