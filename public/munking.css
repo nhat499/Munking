@@ -174,7 +174,8 @@ btncontainer {
     overflow: visible;
 }
 
-.cardWrapper:hover {
+#thePlayerhand > .cardWrapper:hover,
+#lootContainer > .cardWrapper:hover{
     position: relative;
     bottom: 30px;
 }

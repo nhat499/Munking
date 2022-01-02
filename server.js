@@ -91,7 +91,6 @@ io.on("connection", socket => {
         currentPlayerInGame.push(player);
         socket.broadcast.emit("addnewPlayer", player);
         // [[name, socket.id, lv], [...]]
-        console.log(currentPlayerInGame);
         socket.emit("addPreviousPlayer", currentPlayerInGame); 
         
         // create random hand
@@ -121,9 +120,17 @@ io.on("connection", socket => {
 
         // listen for when player goes on an adventure
         socket.on("goOnAdventure", (playerInfo) => {
-            let cardInfo = ["monster", monster[rand(5)], "lv. " + rand(20)];
-            playerInfo[8] = cardInfo;
-            io.emit("someOneWentonAdventure", playerInfo);
+            let monsterLv = rand(20);
+            let playerLv = currentPlayerInGame[indexOfCurrentPlayer(playerInfo[1])][2];
+            if (playerLv >= 5 && playerLv < 9) {
+                monsterLv += 20;
+            }
+            if (playerLv >= 8) {
+                monsterLv += 100;
+            }
+            let cardInfo = ["monster", monster[rand(5)], "lv. " + monsterLv];
+            playerInfo[0][8] = cardInfo;
+            io.emit("someOneWentonAdventure", playerInfo[0]);
 
             socket.emit("btnEnable", "unhidden fight button");
         });
@@ -169,7 +176,8 @@ io.on("connection", socket => {
         
         //list for treasure request, create and send treasure
         socket.on("getTreasure", monsterLv => {
-            let numberOfTreasure = (parseInt(monsterLv) / 5) + 1;
+            let numberOfTreasure = Math.ceil(parseInt(monsterLv) / 7);
+            
             let allTreausreCard = [];
             for (let i = 0; i < numberOfTreasure; i++) {
                 if (rand(2) == 0) { // get curse

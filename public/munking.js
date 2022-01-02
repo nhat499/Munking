@@ -30,7 +30,8 @@
 
     socket.on("btnEnable", () => {
         qs("#fightBtn").classList.remove("hidden");
-        qs("#runBtn").classList.remove("hidden");
+        // for testing purposes
+        //qs("#runBtn").classList.remove("hidden");
     })
 
     socket.on("everyonehideBattleFrame", () => {
@@ -169,7 +170,6 @@
     }
 
     function addPreviousPlayer(currentPlayer) {
-        console.log(currentPlayer);
         for (let i = 0; i < currentPlayer.length; i++) {
             addnewPlayer(currentPlayer[i]);
         }
@@ -451,12 +451,11 @@
     }
 
     function sendGoOnAdventureInfo() {
-        let playerInfo = getPlayerInfo();           /////////////////////
-
-        socket.emit("goOnAdventure", playerInfo);
+        let playerInfo = getPlayerInfo();           
+        socket.emit("goOnAdventure", [playerInfo, socket.id]);
     }
 
-    function getPlayerInfo() {                        /////////////////////////
+    function getPlayerInfo() {                        
         let thePlayerIcon = qs("#thePlayerIcon");
         let length = thePlayerIcon.children.length;
         let playerInfo = [];
@@ -567,7 +566,6 @@
     }
     
     function addnewPlayer(playerName) {
-        console.log(playerName);
         let otherPlayer = document.createElement("div");
         otherPlayer.classList.add("otherPlayer");
         let otherPlayerIcon = document.createElement("div");
