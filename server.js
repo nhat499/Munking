@@ -83,6 +83,7 @@ io.on("connection", socket => {
     socket.on("disconnect", () => {
         remove(indexOfCurrentPlayer(socket.id));
         numOfPlayer--;
+        io.emit("newConnection", numOfPlayer);
         io.emit("removePlayer", socket.id);
     });
 
