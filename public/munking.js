@@ -13,12 +13,15 @@
     });
 
     socket.on("removePlayer", id => {
-        console.log("everyone remove" + id);
         removePlayer(id);
     })
 
     socket.on("addnewPlayer", playerName => {
         addnewPlayer(playerName);
+    });
+
+    socket.on("addPreviousPlayer", currentPlayer => {
+        addPreviousPlayer(currentPlayer);
     });
 
     socket.on("someOneWentonAdventure", (playerInfo)=> {
@@ -93,9 +96,9 @@
         adventureCard.addEventListener("click", () => {
             //inBattle = true;
             imInbattle = true;
-            console.log("im in battle");
+
             socket.emit("inBattle");
-            console.log("everyone in battle");
+
             sendGoOnAdventureInfo();
         });
 
@@ -165,6 +168,13 @@
         qs("#cancelSendBtn").addEventListener("click", cancel);
     }
 
+    function addPreviousPlayer(currentPlayer) {
+        console.log(currentPlayer);
+        for (let i = 0; i < currentPlayer.length; i++) {
+            addnewPlayer(currentPlayer[i]);
+        }
+    }
+
     function removePlayer(id) {
         let player = qs("#"+id).parentElement;
         let playerName = player.children[1].textContent;
@@ -187,7 +197,6 @@
 
     function getGift(giftInfo) {
         alert("you got a gift");
-        console.log(giftInfo);
         let newCard = createCard();
         let cardInfo = newCard.children[0].children;
         for (let i = 0; i < cardInfo.length; i++) {
@@ -209,14 +218,14 @@
     }
 
     function showBossDrop(allTreasureCard) {
-        console.log(allTreasureCard);
         let loopConatiner = qs("#lootContainer");
+        let loopFrame = qs(".lootFrame");
         let allCard = createTreasureCard(allTreasureCard);
         for (let i = 0; i< allTreasureCard.length; i++) {
             loopConatiner.appendChild(allCard[i]);
         }
         setTimeout(() => {
-            qs(".lootFrame").classList.remove("hidden");
+            loopFrame.classList.remove("hidden");
         }, 1500);
     }
 
@@ -233,7 +242,6 @@
         for (let i = 0; i < allTreasureCard.length; i++) {
             let newCard = createCard();
             let cardinfo = newCard.children[0];
-            console.log(newCard);
             if (allTreasureCard[i][0] == "CurseOrBuff") {
                 cardinfo.children[0].textContent = "CurseOrBuff";
                 cardinfo.children[1].textContent = allTreasureCard[i][1];
@@ -325,7 +333,7 @@
     }
 
     function sendLevel(playerName, levelAdded) {
-        socket.emit("newLevel", [playerName, levelAdded]);
+        socket.emit("newLevel", [playerName, socket.id, levelAdded]);
     }
 
     function updateBattle(defeatePerson) {
@@ -348,7 +356,7 @@
         }
         let currentLv = allPlayerIcon[i].parentElement.parentElement.
             children[0].textContent.slice(3);
-        let newLevel = playerInfo[1] + parseInt(currentLv);
+        let newLevel = playerInfo[2] + parseInt(currentLv);
         if (newLevel >= 0) {
             let newLvBox = document.getElementById(newLevel).children[1];
             newLvBox.appendChild(allPlayerIcon[i]);
@@ -403,17 +411,13 @@
     }
 
     function runClicked() {
-        //inBattle = false;
-        console.log("im not in battle");
         socket.emit("leaveBattle");
-        console.log("everyone not in battle");
         disableButton();
         socket.emit("hideBattleFrame");
     }
 
     function goOnAdventure(playerInfo) {
         socket.emit("inBattle");
-        console.log("everyone in battle");
         qs(".battleFrame").classList.remove("hidden");
         qs("#deckTreasure").classList.add("invisiable");
 
@@ -479,7 +483,7 @@
         qs("#playerName").textContent = name;
 
         // update other player that a new player join
-        socket.emit("joinGame", [name, socket.id]);
+        socket.emit("joinGame", [name, socket.id, 0]);
 
         // generate cards for current player
         socket.on("randomCard", cardArray => {
@@ -565,7 +569,6 @@
     }
     
     function addnewPlayer(playerName) {
-        console.log("addnewPlayer");
         console.log(playerName);
         let otherPlayer = document.createElement("div");
         otherPlayer.classList.add("otherPlayer");
@@ -579,9 +582,11 @@
         let newIconOnBoard = document.createElement("div");
         newIconOnBoard.classList.add("playerIconOnBoard");
         newIconOnBoard.textContent = playerName[0];
-        qs(".iconContainer").appendChild(newIconOnBoard);
+        let iconcontainer = document.getElementById(playerName[2]).children[1];
+        iconcontainer.appendChild(newIconOnBoard);
         otherPlayer.appendChild(otherPlayerIcon);
         otherPlayer.appendChild(name);
+
         let otherplayerClone = otherPlayer.cloneNode(true);
         otherplayerClone.addEventListener("click", selectIcon);
         qs("sendTo").appendChild(otherplayerClone);

@@ -220,7 +220,7 @@ h1 {
     /* height: fit-content;
     width: fit-content; */
     height: 250px;
-    width: 80%;
+    width: 50%;
     position:absolute;
     background-color:burlywood;
     top:16%;
@@ -254,7 +254,6 @@ closeBtn:hover {
     border-width: thick;
     border-color: darkgreen;
 }
-
 
 #lootContainer {
     display: flex;

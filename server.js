@@ -36,16 +36,36 @@ function rand(limit) {
 }
 
 
+let currentPlayerInGame = [];
+// [[name, socket.id, lv], [...]]
+
+function indexOfCurrentPlayer(playerID) {
+    for (let i = 0; i < currentPlayerInGame.length; i++) {
+        if (currentPlayerInGame[i][1] == playerID) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function remove(index) {
+    let firstPart = currentPlayerInGame.slice(0, index);
+    let secondPart = currentPlayerInGame.slice(index+1);
+    currentPlayerInGame = firstPart.concat(secondPart);
+}
+
 // run when client connect
 io.on("connection", socket => {
     numOfPlayer++;
 
-    socket.off("connection", () => {
-            console.log("a user join after the game started");
-        }
-    );
+    // socket.off("connection", () => {
+    //         console.log("a user join after the game started");
+    //     }
+    // );
 
     // emit to single client
+    // socket.emit()
+
     io.emit("newConnection", numOfPlayer);   
     // emit to everybody except the user
     //socket.broadcast.emit()
@@ -61,14 +81,18 @@ io.on("connection", socket => {
 
     //run when client disconet
     socket.on("disconnect", () => {
+        remove(indexOfCurrentPlayer(socket.id));
         numOfPlayer--;
         io.emit("removePlayer", socket.id);
     });
 
     // listen for new player to join the game
     socket.on("joinGame", (player) => {
-
-        io.emit("addnewPlayer", player);
+        currentPlayerInGame.push(player);
+        socket.broadcast.emit("addnewPlayer", player);
+        // [[name, socket.id, lv], [...]]
+        console.log(currentPlayerInGame);
+        socket.emit("addPreviousPlayer", currentPlayerInGame); 
         
         // create random hand
         // 0,1,2 equips card
