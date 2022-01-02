@@ -157,6 +157,8 @@ io.on("connection", socket => {
 
         // listen for level changes
         socket.on("newLevel", (playerInfo) => {
+            let playerIndex = indexOfCurrentPlayer(playerInfo[1]);
+            currentPlayerInGame[playerIndex][2] += playerInfo[2];
             io.emit("updateNewLevel", playerInfo);
         });
 

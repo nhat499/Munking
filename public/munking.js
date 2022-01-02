@@ -317,8 +317,6 @@
         if (parseInt(attack) > parseInt(monsterAttack)) {
             sendbattle(monsterName);
             sendLevel(playerName, 1); // level up one
-            // get treause function
-            
             socket.emit("getTreasure", monsterAttack);
         } else {
             sendbattle(playerName);
