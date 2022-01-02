@@ -8,12 +8,13 @@
     const socket = io();
 
 
-    socket.on("newConnection", numOfPlayer => {
+    socket.on("updateNumberOfPlayer", numOfPlayer => {
         updateNumberOfPlayer(numOfPlayer);
     });
 
-    socket.on("removePlayer", id => {
-        removePlayer(id);
+    socket.on("removePlayer", player => {
+        console.log("player remove " + player);
+        removePlayer(player);
     })
 
     socket.on("addnewPlayer", playerName => {
@@ -175,14 +176,18 @@
         }
     }
 
-    function removePlayer(id) {
-        let player = qs("#"+id).parentElement;
-        let playerName = player.children[1].textContent;
-        player.remove();
-        let allPlayer = qsa(".playerIconOnBoard");
-        for (let i = 0; i < allPlayer.length; i++) {
-            if (allPlayer[i].textContent = playerName) {
-                allPlayer[i].remove();
+    function removePlayer(playerInfo) {
+        let headIcon = document.getElementById(playerInfo[1]).parentElement;
+        headIcon.remove();
+        let removePlayerLv = playerInfo[2];
+        console.log(removePlayerLv);
+        let lvBox = document.getElementById(removePlayerLv);
+        lvBoxIconContainer = lvBox.children[1].children;
+        console.log(lvBoxIconContainer);
+        for (let i = 0; i < lvBoxIconContainer.length; i++) {
+            console.log(lvBoxIconContainer[i].textContent + " " + playerInfo[0]);
+            if (lvBoxIconContainer[i].textContent == playerInfo[0]) {
+                lvBoxIconContainer[i].remove();
                 return;
             }
         }
@@ -352,6 +357,7 @@
     }
     
     function updateNewLevel(playerInfo) {
+        console.log(playerInfo);
         let allPlayerIcon = qsa(".playerIconOnBoard");
         let i = 0;
         while (playerInfo[0] != allPlayerIcon[i].textContent) {
@@ -484,6 +490,7 @@
         const name = document.getElementById("PlayerCreateName").value;
         qs("#playerName").textContent = name;
 
+        console.log([name, socket.id, 0]);
         // update other player that a new player join
         socket.emit("joinGame", [name, socket.id, 0]);
 

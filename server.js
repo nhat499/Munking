@@ -57,6 +57,7 @@ function remove(index) {
 // run when client connect
 io.on("connection", socket => {
     numOfPlayer++;
+    currentPlayerInGame.push(["blankName", socket.id, 0]);
 
     // socket.off("connection", () => {
     //         console.log("a user join after the game started");
@@ -65,8 +66,8 @@ io.on("connection", socket => {
 
     // emit to single client
     // socket.emit()
-
-    io.emit("newConnection", numOfPlayer);   
+    io.emit("updateNumberOfPlayer", numOfPlayer);
+       
     // emit to everybody except the user
     //socket.broadcast.emit()
 
@@ -78,18 +79,21 @@ io.on("connection", socket => {
 
     // test to see if u can send array
     
-
     //run when client disconet
     socket.on("disconnect", () => {
-        remove(indexOfCurrentPlayer(socket.id));
+        let indexOfPlayer = indexOfCurrentPlayer(socket.id);
+        socket.broadcast.emit("removePlayer", currentPlayerInGame[indexOfPlayer]);
         numOfPlayer--;
-        io.emit("newConnection", numOfPlayer);
-        io.emit("removePlayer", socket.id);
+        io.emit("updateNumberOfPlayer", numOfPlayer);
+        remove(indexOfPlayer);
     });
+
+
 
     // listen for new player to join the game
     socket.on("joinGame", (player) => {
-        currentPlayerInGame.push(player);
+        console.log(player);
+        currentPlayerInGame[indexOfCurrentPlayer(player[1])] = player;
         socket.broadcast.emit("addnewPlayer", player);
         // [[name, socket.id, lv], [...]]
         socket.emit("addPreviousPlayer", currentPlayerInGame); 
@@ -117,94 +121,92 @@ io.on("connection", socket => {
                 playerHand[i] = monster[randomNumber];
             } // special card ->  
         }
-        socket.emit("randomCard", playerHand);
+        socket.emit("randomCard", playerHand);     
+    });
 
-        // listen for when player goes on an adventure
-        socket.on("goOnAdventure", (playerInfo) => {
-            let monsterLv = rand(20) + 1;
-            let playerLv = currentPlayerInGame[indexOfCurrentPlayer(playerInfo[1])][2];
-            if (playerLv >= 5 && playerLv < 9) {
-                monsterLv += 20;
-            }
-            if (playerLv >= 8) {
-                monsterLv += 100;
-            }
-            let cardInfo = ["monster", monster[rand(5)], "lv. " + monsterLv];
-            playerInfo[0][8] = cardInfo;
-            io.emit("someOneWentonAdventure", playerInfo[0]);
-
+    // listen for when player goes on an adventure
+    socket.on("goOnAdventure", (playerInfo) => {
+        let monsterLv = rand(20);
+        let playerLv = currentPlayerInGame[indexOfCurrentPlayer(playerInfo[1])][2];
+        if (playerLv >= 5) {
+            monsterLv += 20;
+        }
+        if (playerLv >= 8) {
+             monsterLv += 100;
+        }
+        let cardInfo = ["monster", monster[rand(5)], "lv. " + monsterLv];
+        playerInfo[0][8] = cardInfo;
+        io.emit("someOneWentonAdventure", playerInfo[0]);
+    
             socket.emit("btnEnable", "unhidden fight button");
-        });
+    });
 
-        //listen for when a player is in battle
-        socket.on("inBattle", () => {
-            let inbattle = true;
-            io.emit("updateBattleStatus", inbattle);
-        });
+    //listen for when a player is in battle
+    socket.on("inBattle", () => {
+        let inbattle = true;
+        io.emit("updateBattleStatus", inbattle);
+    });
 
-        //listen for when a player leaves battle
-        socket.on("leaveBattle", () => {
-            let inbattle = false;
-            io.emit("updateBattleStatus", inbattle);
-        });
+    //listen for when a player leaves battle
+    socket.on("leaveBattle", () => {
+        let inbattle = false;
+        io.emit("updateBattleStatus", inbattle);
+    });    
 
-        // listen for when player update equips on an adventure
-        socket.on("equipInbattle", (playerInfo) => {
-            io.emit("updatePlayerInfo", playerInfo);
-        });
+    // listen for when player update equips on an adventure
+    socket.on("equipInbattle", (playerInfo) => {
+        io.emit("updatePlayerInfo", playerInfo);
+    });
 
-        //listen for when there are no battles
-        socket.on("hideBattleFrame", () => {
-            io.emit("everyonehideBattleFrame");
-        })
+    //listen for when there are no battles
+    socket.on("hideBattleFrame", () => {
+        io.emit("everyonehideBattleFrame");
+    })
 
-        //listen for battle result
-        socket.on("battleResult", (defeatePerson) => {
-            io.emit("updateBattle", defeatePerson);
-        });
+    //listen for battle result
+    socket.on("battleResult", (defeatePerson) => {
+        io.emit("updateBattle", defeatePerson);
+    });
 
         // listen for level changes
-        socket.on("newLevel", (playerInfo) => {
-            let playerIndex = indexOfCurrentPlayer(playerInfo[1]);
-            currentPlayerInGame[playerIndex][2] += playerInfo[2];
-            io.emit("updateNewLevel", playerInfo);
-        });
-
-        //listen for buffs
-        socket.on("buffing", buffingInfo => {
-            io.emit("buffup", buffingInfo);
-        });
-        
-        //list for treasure request, create and send treasure
-        socket.on("getTreasure", monsterLv => {
-            let numberOfTreasure = Math.ceil(parseInt(monsterLv) / 7);
-            
-            let allTreausreCard = [];
-            for (let i = 0; i < numberOfTreasure; i++) {
-                if (rand(2) == 0) { // get curse
-                    let curseCard = ["CurseOrBuff", curseOrBuff[rand(5)]];
-                    allTreausreCard[i] = curseCard;
-                } else { // get equips
-                    let equipsCard = ["Equips", equipsVariety[rand(5)] + " " + 
-                        equipsTypes[rand(5)]];
-                    allTreausreCard[i] = equipsCard;
-                }
-            }
-            io.emit("showBossDrop", allTreausreCard);
-            socket.emit("getBossDrop", allTreausreCard);
-        });
-
-        // listen when a player want to send another player a card
-        socket.on("sendCard", (giftInfo) => {
-            //gift info = [socketid, typeofcard, nameofcard, description];
-
-            //send to giftInfo[0];
-            
-            io.to(giftInfo[0]).emit('getGift', giftInfo);
-        });
-            
+    socket.on("newLevel", (playerInfo) => {
+        let playerIndex = indexOfCurrentPlayer(playerInfo[1]);
+        currentPlayerInGame[playerIndex][2] += playerInfo[2];
+        io.emit("updateNewLevel", playerInfo);
     });
-})
+
+    //listen for buffs
+    socket.on("buffing", buffingInfo => {
+        io.emit("buffup", buffingInfo);
+    });
+
+    //list for treasure request, create and send treasure
+    socket.on("getTreasure", monsterLv => {
+        let numberOfTreasure = (Math.ceil(parseInt(monsterLv) / 7) + 1);
+            
+        let allTreausreCard = [];
+        for (let i = 0; i < numberOfTreasure; i++) {
+            if (rand(2) == 1) { // get curse
+                let curseCard = ["CurseOrBuff", curseOrBuff[rand(5)]];
+                allTreausreCard[i] = curseCard;
+            } else { // get equips
+                let equipsCard = ["Equips", equipsVariety[rand(5)] + " " + 
+                equipsTypes[rand(5)]];
+                allTreausreCard[i] = equipsCard;
+            }
+        }
+        io.emit("showBossDrop", allTreausreCard);
+        socket.emit("getBossDrop", allTreausreCard);
+    });
+
+    // listen when a player want to send another player a card
+    socket.on("sendCard", (giftInfo) => {
+        //gift info = [socketid, typeofcard, nameofcard, description];
+        //send to giftInfo[0];  
+        io.to(giftInfo[0]).emit('getGift', giftInfo);
+    });
+
+});
 
 server.listen(PORT, () => {
    console.log("sever running on " + PORT)
