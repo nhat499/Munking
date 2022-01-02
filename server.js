@@ -72,7 +72,7 @@ io.on("connection", socket => {
 
     // to everybody
     // io.emit()
-
+// testing
     // to a specific client
     // io.to(socketid).emit('message', 'for your eyes only');
 
