@@ -177,6 +177,8 @@ btncontainer {
 #thePlayerhand > .cardWrapper:hover,
 #lootContainer > .cardWrapper:hover{
     position: relative;
+    padding-right: 3px;
+    padding-left: 3px;
     bottom: 30px;
 }
 
@@ -277,6 +279,8 @@ closeBtn:hover {
 .selectedCard {
     position: relative;
     overflow: visible;
+    padding-right: 3px;
+    padding-left: 3px;
     bottom: 30px;
 }
 
@@ -326,6 +330,10 @@ sendToContainer {
     border-style: double;
     border-width: thick;
     border-color: brown;
+}
+
+.CurseOrBuff {
+    border-color: purple;
 }
 
 /* .cards {

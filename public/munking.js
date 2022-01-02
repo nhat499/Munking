@@ -202,6 +202,9 @@
         for (let i = 0; i < cardInfo.length; i++) {
             cardInfo[i].textContent = giftInfo[i+1];
         }
+        if (cardInfo[0].textContent == "CurseOrBuff") {
+            newCard.children[0].classList.add("CurseOrBuff");
+        }
         qs("#thePlayerhand").appendChild(newCard);
     }
 
@@ -245,6 +248,7 @@
             if (allTreasureCard[i][0] == "CurseOrBuff") {
                 cardinfo.children[0].textContent = "CurseOrBuff";
                 cardinfo.children[1].textContent = allTreasureCard[i][1];
+                newCard.children[0].classList.add("CurseOrBuff");
             } else if (allTreasureCard[i][0] == "Equips") {
                 cardinfo.children[0].textContent = "Equips";
                 cardinfo.children[1].textContent = allTreasureCard[i][1];
@@ -491,7 +495,7 @@
     // upload random card to the currect player's hand
     function getCardsToCurrentPlayerHand(cardArray) {
         let thePlayerhand = qs("#thePlayerhand");
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 5; i++) {
             let card = createCard();
             let cardInfo = card.firstChild.childNodes;
             if (i < 3) {
@@ -501,11 +505,12 @@
             } else if (i < 5) {
                 cardInfo[0].textContent = "CurseOrBuff";
                 cardInfo[1].textContent = cardArray[i];
+                card.children[0].classList.add("CurseOrBuff");
             } else {
-                cardInfo[0].textContent = "Monster";
-                cardInfo[1].textContent = cardArray[i];
-                let lv = Math.floor(Math.random() * 20);
-                cardInfo[2].textContent = "lv. " + lv;
+                // cardInfo[0].textContent = "Monster";
+                // cardInfo[1].textContent = cardArray[i];
+                // let lv = Math.floor(Math.random() * 20);
+                // cardInfo[2].textContent = "lv. " + lv;
             } // special card ->
             thePlayerhand.prepend(card);
         }
