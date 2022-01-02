@@ -120,7 +120,7 @@ io.on("connection", socket => {
 
         // listen for when player goes on an adventure
         socket.on("goOnAdventure", (playerInfo) => {
-            let monsterLv = rand(20);
+            let monsterLv = rand(20) + 1;
             let playerLv = currentPlayerInGame[indexOfCurrentPlayer(playerInfo[1])][2];
             if (playerLv >= 5 && playerLv < 9) {
                 monsterLv += 20;
