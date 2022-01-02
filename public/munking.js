@@ -225,6 +225,7 @@
         let loopFrame = qs(".lootFrame");
         let allCard = createTreasureCard(allTreasureCard);
         for (let i = 0; i< allTreasureCard.length; i++) {
+            allCard[i].removeEventListener("click", selectCard);
             loopConatiner.appendChild(allCard[i]);
         }
         setTimeout(() => {
