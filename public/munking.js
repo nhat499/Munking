@@ -172,7 +172,9 @@
 
     function addPreviousPlayer(currentPlayer) {
         for (let i = 0; i < currentPlayer.length; i++) {
-            addnewPlayer(currentPlayer[i]);
+            if (currentPlayer[i][0] != "blankName") {
+                addnewPlayer(currentPlayer[i]);
+            }
         }
     }
 
