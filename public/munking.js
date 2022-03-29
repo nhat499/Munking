@@ -6,7 +6,7 @@
 (function() {
     window.addEventListener("load", init);
     const socket = io();
-
+    let inGame = false;   
 
     socket.on("updateNumberOfPlayer", numOfPlayer => {
         updateNumberOfPlayer(numOfPlayer);
@@ -18,7 +18,9 @@
     })
 
     socket.on("addnewPlayer", playerName => {
-        addnewPlayer(playerName);
+        if (inGame) {
+            addnewPlayer(playerName);
+        }
     });
 
     socket.on("addPreviousPlayer", currentPlayer => {
@@ -171,12 +173,14 @@
     }
 
     function addPreviousPlayer(currentPlayer) {
+        console.log(currentPlayer);
         for (let i = 0; i < currentPlayer.length; i++) {
             if (currentPlayer[i][0] != "blankName") {
                 addnewPlayer(currentPlayer[i]);
             }
         }
     }
+
 
     function removePlayer(playerInfo) {
         let headIcon = document.getElementById(playerInfo[1]).parentElement;
@@ -488,6 +492,7 @@
         qs("main").classList.remove("hidden");
         qs(".joinGame").classList.add("hidden");
 
+        inGame = true;
         // update current player name
         const name = document.getElementById("PlayerCreateName").value;
         qs("#playerName").textContent = name;
@@ -581,6 +586,7 @@
     }
     
     function addnewPlayer(playerName) {
+        console.log(playerName);
         let otherPlayer = document.createElement("div");
         otherPlayer.classList.add("otherPlayer");
         let otherPlayerIcon = document.createElement("div");
